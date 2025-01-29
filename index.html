@@ -169,6 +169,18 @@
 
 
           console.log("Firebase initialized successfully!");
+          
+          function isWebGL2Supported() {
+              var canvas = document.createElement("canvas");
+              var gl = canvas.getContext("webgl2");
+              return !!gl; // Returns true if WebGL 2.0 is supported
+            }
+
+            if (!isWebGL2Supported()) {
+              console.warn("WebGL 2.0 NOT supported! Switching to WebGL 1.0...");
+              window.forceWebGL1 = true;
+            }
+          
       </script>
   </body>
 </html>

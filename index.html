@@ -176,10 +176,15 @@
               return !!gl; // Returns true if WebGL 2.0 is supported
             }
 
-            if (!isWebGL2Supported()) {
-              console.warn("WebGL 2.0 NOT supported! Switching to WebGL 1.0...");
-              window.forceWebGL1 = true;
-            }
+            // Wait for Unity to load before checking WebGL support
+            window.onload = function () {
+              setTimeout(function () {
+                if (!isWebGL2Supported()) {
+                  console.warn("🚨 WebGL 2.0 NOT supported! Switching to WebGL 1.0...");
+                  window.forceWebGL1 = true;
+                }
+              }, 500); // Delay to prevent WASM crash
+            };
           
       </script>
   </body>

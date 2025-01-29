@@ -116,8 +116,7 @@
       </script>
 
       <script type="module">// Import the functions you need from the SDKs you need
-          import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-          import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
+          import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
           import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
           // TODO: Add SDKs for Firebase products that you want to use
           // https://firebase.google.com/docs/web/setup#available-libraries
@@ -143,16 +142,30 @@
 
 
 
-          // Create a global database instance
-          const app = initializeApp(firebaseConfig);
-          const analytics = getAnalytics(app);
+          // Ensure Firebase is initialized only once
+          let app;
+            if (!getApps().length) {
+              app = initializeApp(firebaseConfig);
+              console.log("Firebase initialized WITHOUT IndexedDB or Analytics.");
+            } else {
+              app = getApps()[0];
+              console.warn("Firebase was already initialized.");
+            }
+
+          
           const database = getDatabase(app); // Initialize the Database SDK
           window.firebase = app; // Expose Firebase globally
           window.firebaseDatabase = database; // Expose Database globally
-          window.firebaseAnalytics = analytics;
           window.firebaseRef = ref;
           window.firebaseSet = set;
           window.firebaseGet = get;
+          
+          
+          /// Disable Firebase Analytics (Prevents IndexedDB Errors)
+          if (typeof window.firebaseAnalytics !== "undefined") {
+            window.firebaseAnalytics = null;
+            console.warn("Firebase Analytics disabled to prevent IndexedDB errors.");
+          }
 
 
           console.log("Firebase initialized successfully!");
